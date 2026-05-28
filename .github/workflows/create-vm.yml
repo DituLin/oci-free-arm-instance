@@ -19,7 +19,7 @@ env:
   SECURITY_LIST_NAME: always-free-a1-security-list
   OCPUS: "2"
   MEMORY_GB: "12"
-  BOOT_VOLUME_GB: "50"
+  BOOT_VOLUME_GB: "100"
 
 jobs:
   create:
