@@ -17,8 +17,8 @@ env:
   IGW_NAME: always-free-a1-internet-gateway
   ROUTE_TABLE_NAME: always-free-a1-public-route-table
   SECURITY_LIST_NAME: always-free-a1-security-list
-  OCPUS: "1"
-  MEMORY_GB: "2"
+  OCPUS: "2"
+  MEMORY_GB: "12"
   BOOT_VOLUME_GB: "50"
 
 jobs:
