@@ -3,7 +3,7 @@ name: Try to Create OCI Always Free A1
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/20 * * * *"
+    - cron: "7,27,47 * * * *"
 
 concurrency:
   group: oci-a1-create
