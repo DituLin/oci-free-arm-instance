@@ -9,6 +9,10 @@ concurrency:
   group: oci-a1-create
   cancel-in-progress: false
 
+permissions:
+  actions: write
+  contents: read
+
 env:
   OCI_CLI_REGION: us-phoenix-1
   INSTANCE_NAME: always-free-a1
@@ -57,14 +61,29 @@ jobs:
         env:
           OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
           SSH_PUBLIC_KEY: ${{ secrets.SSH_PUBLIC_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
 
           COMPARTMENT_ID="$OCI_CLI_TENANCY"
 
+          disable_workflow() {
+            echo "Disabling this workflow to stop scheduled retries."
+            if curl -fsS -X PUT \
+              -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github+json" \
+              -H "X-GitHub-Api-Version: 2022-11-28" \
+              "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/actions/workflows/create-vm.yml/disable" >/dev/null; then
+              echo "Workflow disabled successfully."
+            else
+              echo "Warning: failed to disable workflow automatically." >&2
+            fi
+          }
+
           existing_instance_id="$(oci compute instance list --compartment-id "$COMPARTMENT_ID" --display-name "$INSTANCE_NAME" --lifecycle-state RUNNING --query 'data[0].id' --raw-output 2>/dev/null || true)"
           if [ -n "$existing_instance_id" ] && [ "$existing_instance_id" != "null" ]; then
             echo "Instance already exists and is RUNNING: $existing_instance_id"
+            disable_workflow
             exit 0
           fi
 
@@ -118,3 +137,4 @@ jobs:
           fi
 
           echo "Instance created successfully."
+          disable_workflow
