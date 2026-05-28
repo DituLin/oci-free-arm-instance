@@ -18,7 +18,7 @@ env:
   ROUTE_TABLE_NAME: always-free-a1-public-route-table
   SECURITY_LIST_NAME: always-free-a1-security-list
   OCPUS: "1"
-  MEMORY_GB: "6"
+  MEMORY_GB: "2"
   BOOT_VOLUME_GB: "50"
 
 jobs:
@@ -50,6 +50,7 @@ jobs:
           key_file=${HOME}/.oci/oci_api_key.pem
           region=${OCI_CLI_REGION}
           EOF
+          chmod 600 "$HOME/.oci/config"
           oci iam region list >/dev/null
 
       - name: Try to create an Always Free A1 instance
