@@ -132,8 +132,8 @@ jobs:
           done <<< "$ads"
 
           if [ "$created" != "true" ]; then
-            echo "No capacity available for VM.Standard.A1.Flex right now. The scheduled workflow will retry."
-            exit 1
+            echo "No capacity or transient OCI launch failure right now. The scheduled workflow will retry."
+            exit 0
           fi
 
           echo "Instance created successfully."
